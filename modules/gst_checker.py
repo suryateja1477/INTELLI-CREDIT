@@ -45,18 +45,22 @@ def safe_parse_json(response_text):
         pass
     
     try:
-        # ATTEMPT 3: Find first { to last } 
-        # (ignores any text before/after JSON)
-        start = response_text.find('{')
-        end = response_text.rfind('}') + 1
-        if start != -1 and end > start:
-            json_str = response_text[start:end]
-            return json.loads(json_str)
+        # ATTEMPT 3: Find the first complete JSON value in wrapped text.
+        object_start = response_text.find('{')
+        array_start = response_text.find('[')
+        if array_start != -1 and (object_start == -1 or array_start < object_start):
+            end = response_text.rfind(']') + 1
+            if end > array_start:
+                return json.loads(response_text[array_start:end])
+        if object_start != -1:
+            end = response_text.rfind('}') + 1
+            if end > object_start:
+                return json.loads(response_text[object_start:end])
     except:
         pass
-    
+
     try:
-        # ATTEMPT 4: Find [ to ] for JSON arrays
+        # ATTEMPT 4: Find an array when an object appeared first but was invalid
         start = response_text.find('[')
         end = response_text.rfind(']') + 1
         if start != -1 and end > start:
