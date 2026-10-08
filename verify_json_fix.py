@@ -47,10 +47,10 @@ def verify_safe_parse():
     for case in test_cases:
         result = safe_parse_json(case["input"])
         if result == case["expected"]:
-            print(f"✅ PASS: {case['name']}")
+            print(f"PASS: {case['name']}")
             passed += 1
         else:
-            print(f"❌ FAIL: {case['name']}")
+            print(f"FAIL: {case['name']}")
             print(f"   Input: {case['input']}")
             print(f"   Got: {result}")
             print(f"   Expected: {case['expected']}")
